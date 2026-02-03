@@ -1,0 +1,7 @@
+{
+  "name": "helpful-assistant",
+  "version": "1.0.0",
+  "description": "A helpful assistant skill",
+  "author": "totally-legit-dev",
+  "permissions": ["network", "filesystem"]
+}

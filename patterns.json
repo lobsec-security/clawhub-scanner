@@ -1,0 +1,295 @@
+{
+  "version": "1.0.0",
+  "categories": {
+    "data_exfiltration": {
+      "name": "Data Exfiltration",
+      "severity": "critical",
+      "description": "Patterns indicating unauthorized data transmission to external endpoints",
+      "patterns": [
+        {
+          "id": "EXFIL-001",
+          "name": "HTTP data exfiltration",
+          "pattern": "(?:requests\\.(?:post|put|patch)|urllib\\.request\\.urlopen|http\\.client\\.HTTPSConnection)\\s*\\(",
+          "description": "Outbound HTTP requests that could exfiltrate data",
+          "severity": "high",
+          "confidence": "medium"
+        },
+        {
+          "id": "EXFIL-002",
+          "name": "Base64 encoded transmission",
+          "pattern": "base64\\.(?:b64encode|encodebytes)\\s*\\(.*(?:requests|urllib|http)",
+          "description": "Data being base64 encoded before transmission",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "EXFIL-003",
+          "name": "DNS exfiltration",
+          "pattern": "(?:socket\\.gethostbyname|dns\\.resolver\\.resolve|subprocess.*nslookup|subprocess.*dig)\\s*\\(",
+          "description": "DNS queries that could be used for data exfiltration",
+          "severity": "critical",
+          "confidence": "medium"
+        },
+        {
+          "id": "EXFIL-004",
+          "name": "Environment variable harvesting",
+          "pattern": "os\\.environ(?:\\[|\\.(get|items|keys|values))",
+          "description": "Accessing environment variables which may contain secrets",
+          "severity": "high",
+          "confidence": "medium"
+        },
+        {
+          "id": "EXFIL-005",
+          "name": "File read with network send",
+          "pattern": "(?:open\\s*\\(.*\\)\\.read|Path\\(.*\\)\\.read_text)\\s*\\(",
+          "description": "Reading files which could be exfiltrated",
+          "severity": "medium",
+          "confidence": "low"
+        },
+        {
+          "id": "EXFIL-006",
+          "name": "Webhook/callback URL",
+          "pattern": "(?:https?://(?:webhook\\.site|requestbin|pipedream|hookbin|burpcollaborator|interact\\.sh|canarytokens))",
+          "description": "Known data exfiltration callback services",
+          "severity": "critical",
+          "confidence": "high"
+        }
+      ]
+    },
+    "prompt_injection": {
+      "name": "Prompt Injection",
+      "severity": "critical",
+      "description": "Patterns indicating prompt injection or jailbreak attempts",
+      "patterns": [
+        {
+          "id": "PINJ-001",
+          "name": "System prompt override",
+          "pattern": "(?:ignore\\s+(?:all\\s+)?(?:previous|prior|above)\\s+instructions|disregard\\s+(?:your|all)\\s+(?:instructions|rules|guidelines))",
+          "description": "Attempting to override system prompt instructions",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "PINJ-002",
+          "name": "Role hijacking",
+          "pattern": "(?:you\\s+are\\s+now|from\\s+now\\s+on\\s+you|act\\s+as\\s+(?:if\\s+you|a)|pretend\\s+(?:you\\s+are|to\\s+be))",
+          "description": "Attempting to change the AI's role or persona",
+          "severity": "high",
+          "confidence": "medium"
+        },
+        {
+          "id": "PINJ-003",
+          "name": "Hidden instruction in data",
+          "pattern": "(?:\\[INST\\]|\\[SYSTEM\\]|<\\|im_start\\|>system|<system>|BEGIN INSTRUCTION|ADMIN OVERRIDE)",
+          "description": "Hidden instruction tags embedded in data",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "PINJ-004",
+          "name": "Prompt leak attempt",
+          "pattern": "(?:repeat\\s+(?:your|the)\\s+(?:system\\s+)?(?:prompt|instructions)|show\\s+(?:me\\s+)?(?:your|the)\\s+(?:system\\s+)?prompt|what\\s+(?:are|were)\\s+your\\s+instructions)",
+          "description": "Attempting to extract the system prompt",
+          "severity": "high",
+          "confidence": "medium"
+        },
+        {
+          "id": "PINJ-005",
+          "name": "Encoded prompt injection",
+          "pattern": "(?:eval\\s*\\(|exec\\s*\\().*(?:base64|decode|fromhex|rot13)",
+          "description": "Encoded/obfuscated prompt injection payload",
+          "severity": "critical",
+          "confidence": "high"
+        }
+      ]
+    },
+    "wallet_drain": {
+      "name": "Wallet Drain",
+      "severity": "critical",
+      "description": "Patterns indicating cryptocurrency wallet theft or unauthorized transactions",
+      "patterns": [
+        {
+          "id": "WDRAIN-001",
+          "name": "Private key extraction",
+          "pattern": "(?:private_?key|secret_?key|seed_?phrase|mnemonic)\\s*(?:=|:|\\[)",
+          "description": "Accessing or extracting private keys or seed phrases",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "WDRAIN-002",
+          "name": "Unauthorized transfer",
+          "pattern": "(?:transfer|send_transaction|sign_transaction|sendTransaction|signTransaction)\\s*\\(",
+          "description": "Initiating cryptocurrency transfers",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "WDRAIN-003",
+          "name": "Token approval manipulation",
+          "pattern": "(?:approve|increaseAllowance|setApprovalForAll)\\s*\\(",
+          "description": "Setting unlimited token approvals to drain wallets",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "WDRAIN-004",
+          "name": "Hardcoded wallet address",
+          "pattern": "(?:0x[a-fA-F0-9]{40}|[1-9A-HJ-NP-Za-km-z]{32,44})",
+          "description": "Hardcoded wallet addresses that could be drain destinations",
+          "severity": "medium",
+          "confidence": "low"
+        },
+        {
+          "id": "WDRAIN-005",
+          "name": "Keystore file access",
+          "pattern": "(?:\\.keystore|wallet\\.dat|keyfile\\.json|\\.ethereum/keystore)",
+          "description": "Accessing wallet keystore files",
+          "severity": "critical",
+          "confidence": "high"
+        }
+      ]
+    },
+    "persistence": {
+      "name": "Persistence Mechanisms",
+      "severity": "high",
+      "description": "Patterns indicating attempts to maintain persistent access",
+      "patterns": [
+        {
+          "id": "PERS-001",
+          "name": "Cron job installation",
+          "pattern": "(?:crontab|/etc/cron|schtasks|at\\s+\\d|launchctl\\s+load)",
+          "description": "Installing scheduled tasks for persistence",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "PERS-002",
+          "name": "Startup script modification",
+          "pattern": "(?:\\.bashrc|\\.bash_profile|\\.zshrc|\\.profile|/etc/rc\\.local|autostart|startup)",
+          "description": "Modifying startup scripts for persistence",
+          "severity": "high",
+          "confidence": "medium"
+        },
+        {
+          "id": "PERS-003",
+          "name": "SSH key injection",
+          "pattern": "(?:authorized_keys|id_rsa|id_ed25519|\\.ssh/)",
+          "description": "Injecting SSH keys for persistent access",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "PERS-004",
+          "name": "Systemd service creation",
+          "pattern": "(?:systemctl\\s+enable|/etc/systemd|ExecStart|WantedBy)",
+          "description": "Creating systemd services for persistence",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "PERS-005",
+          "name": "File system modification",
+          "pattern": "(?:os\\.chmod|os\\.chown|shutil\\.copy|shutil\\.move)\\s*\\(.*(?:/usr|/etc|/bin|/sbin)",
+          "description": "Modifying system files for persistence",
+          "severity": "high",
+          "confidence": "medium"
+        },
+        {
+          "id": "PERS-006",
+          "name": "Hidden file creation",
+          "pattern": "(?:open\\s*\\(['\"]\\.[^'\"]+['\"]|Path\\s*\\(['\"]\\.[^'\"]+['\"])",
+          "description": "Creating hidden files that could be used for persistence",
+          "severity": "medium",
+          "confidence": "low"
+        }
+      ]
+    },
+    "supply_chain": {
+      "name": "Supply Chain Attack",
+      "severity": "high",
+      "description": "Patterns indicating supply chain compromise or dependency manipulation",
+      "patterns": [
+        {
+          "id": "SUPPLY-001",
+          "name": "Dynamic package installation",
+          "pattern": "(?:pip\\s+install|subprocess.*pip|os\\.system.*pip|importlib\\.import_module)",
+          "description": "Dynamically installing packages at runtime",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "SUPPLY-002",
+          "name": "Code download and execution",
+          "pattern": "(?:exec\\s*\\(.*(?:requests|urllib)|eval\\s*\\(.*(?:requests|urllib))",
+          "description": "Downloading and executing remote code",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "SUPPLY-003",
+          "name": "Typosquatting indicators",
+          "pattern": "(?:import\\s+(?:requets|reqeusts|requsets|urrlib|numppy|pandaas|scikitlearn))",
+          "description": "Importing commonly typosquatted package names",
+          "severity": "high",
+          "confidence": "high"
+        },
+        {
+          "id": "SUPPLY-004",
+          "name": "Setup.py code execution",
+          "pattern": "(?:cmdclass|install_requires.*subprocess|setup\\s*\\(.*ext_modules)",
+          "description": "Suspicious code execution in setup.py",
+          "severity": "high",
+          "confidence": "medium"
+        },
+        {
+          "id": "SUPPLY-005",
+          "name": "Remote code import",
+          "pattern": "(?:importlib\\.util\\.spec_from_file_location|__import__\\s*\\(|imp\\.load_source)",
+          "description": "Dynamically importing code from arbitrary locations",
+          "severity": "high",
+          "confidence": "high"
+        }
+      ]
+    },
+    "code_execution": {
+      "name": "Arbitrary Code Execution",
+      "severity": "high",
+      "description": "Patterns indicating arbitrary code or command execution",
+      "patterns": [
+        {
+          "id": "EXEC-001",
+          "name": "Shell command execution",
+          "pattern": "(?:subprocess\\.(?:call|run|Popen|check_output)|os\\.(?:system|popen|exec[lv]?p?e?))\\s*\\(",
+          "description": "Executing shell commands",
+          "severity": "high",
+          "confidence": "high"
+        },
+        {
+          "id": "EXEC-002",
+          "name": "Dynamic code evaluation",
+          "pattern": "(?:eval|exec|compile)\\s*\\((?!\\s*['\"](?:True|False|None)['\"])",
+          "description": "Dynamically evaluating code strings",
+          "severity": "high",
+          "confidence": "high"
+        },
+        {
+          "id": "EXEC-003",
+          "name": "Pickle deserialization",
+          "pattern": "(?:pickle\\.loads?|shelve\\.open|marshal\\.loads?)\\s*\\(",
+          "description": "Deserializing data which can lead to code execution",
+          "severity": "critical",
+          "confidence": "high"
+        },
+        {
+          "id": "EXEC-004",
+          "name": "YAML unsafe load",
+          "pattern": "yaml\\.(?:load|unsafe_load)\\s*\\(",
+          "description": "Unsafe YAML deserialization (can execute arbitrary code)",
+          "severity": "critical",
+          "confidence": "high"
+        }
+      ]
+    }
+  }
+}
