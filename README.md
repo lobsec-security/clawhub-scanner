@@ -1,5 +1,11 @@
 # ClawHub Scanner
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/lobsec-security/clawhub-scanner/releases)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/lobsec-security/clawhub-scanner/actions)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![OpenClaw](https://img.shields.io/badge/OpenClaw-Compatible-orange.svg)](https://openclaw.ai/)
+
 Security scanner for OpenClaw skill directories. Detects malicious patterns including data exfiltration, prompt injection, wallet drains, persistence mechanisms, supply chain attacks, and arbitrary code execution.
 
 ## Usage
